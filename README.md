@@ -1,5 +1,6 @@
 # Building-a-log-report-for-Database
-
+## Synopsis
+Building a reporting tool depending on the logs in database. Use information from the database to discover bunch of question such as what kind of articles the site's readers like.
 
 ### Installation
 1.Preparation<br />
