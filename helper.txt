@@ -1,0 +1,169 @@
+#recode some debug process 
+#recode some useful stack overflow answers
+
+##Explore the Database
+# Looking at the schema for Database
+\dt
+#Looking at the schema for each tables
+\d articles
+\d author
+\d log
+# Looking inside each table
+select * from articles limit 2;
+select * from authors limit 2;
+select * from log limit 2;
+------------------------+--------------------------------+--------
+# 1. What are the most popular three articles of all time?
+#Test the different between slug with title
+Select articles.title, articles.slug From articles limit 1;
+
+#Test concat
+SELECT log.path
+FROM log join articles
+on log.path LIKE CONCAT('/article/', articles.slug) 
+LIMIT 10;
+
+#Test join performance
+SELECT articles.title, count(*) as num
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.title
+ORDER BY num desc
+LIMIT 10;
+
+#create view 
+CREATE VIEW views
+AS SELECT articles.title, count(*) as view
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.title
+ORDER BY num desc;
+              title               |  num   
+----------------------------------+--------
+ Candidate is jerk, alleges rival | 338647
+ Bears love berries, alleges bear | 253801
+ Bad things gone, say good people | 170098
+------------------------+--------------------------------+--------
+# 2. Who are the most popular article authors of all time?
+#Find the ID of most popular article
+SELECT articles.id, count(*) as num
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.id
+ORDER BY num desc
+LIMIT 4;
+
+#create view for the ID of most popular article(articles.ID is not match with authors.id use articles.author here)
+CREATE VIEW bestAuthor
+AS SELECT articles.author, count(*) as num
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.id
+ORDER BY num desc;
+
+ author |  num   
+--------+--------
+      2 | 338647
+      1 | 253801
+      3 | 170098
+      1 |  84906
+
+#Find the name of Author
+SELECT authors.name, sum(bestAuthor.num) as view
+FROM authors join bestAuthor
+on authors.id=bestAuthor.author
+Group by authors.name
+ORDER BY view desc
+LIMIT 4;
+------------------------+--------------------------------+--------
+# 3. On which days did more than 1% of requests lead to errors?
+SELECT log.time
+FROM log
+where status unlike concat(‘2%’)
+GROUP BY time
+
+#test date() function to select date from time
+SELECT date(log.time) AS date
+FROM log
+Limit 5;
+
+#text requestTLog
+SELECT date(log.time) AS date, count(*) as requestTime
+FROM log
+Group by date
+Limit 5;
+
+#create view requestLog
+CREATE VIEW requestLog
+AS SELECT date(log.time) AS date, count(*) as requestTime
+FROM log
+Group by date;
+    date    | requesttime 
+------------+-------------
+ 2016-07-01 |       38705
+ 2016-07-02 |       55200
+ 2016-07-03 |       54866
+ 2016-07-04 |       54903
+ 2016-07-05 |       54585
+
+#test errorLog
+SELECT date(log.time) AS date, count(*) as errorTime
+FROM log
+WHERE log.status != '200 OK'
+GROUP BY date
+Limit 5;
+
+#create view errorLog
+CREATE VIEW errorLog
+AS SELECT date(log.time) AS date, count(*) as errorTime
+FROM log
+WHERE log.status != '200 OK'
+GROUP BY date;
+     date    | errortime 
+------------+-----------
+ 2016-07-31 |       329
+ 2016-07-06 |       420
+ 2016-07-17 |      1265
+ 2016-07-12 |       373
+ 2016-07-10 |       371
+
+#create view Log
+CREATE VIEW TotalLog
+AS SELECT errorLog.date, errortime, requesttime
+FROM requestLog, errorLog
+WHERE requestLog.date=errorLog.date;
+    date    | errortime | requesttime 
+------------+-----------+-------------
+ 2016-07-01 |       274 |       38705
+ 2016-07-02 |       389 |       55200
+ 2016-07-03 |       401 |       54866
+ 2016-07-04 |       380 |       54903
+ 2016-07-05 |       423 |       54585
+ 2016-07-06 |       420 |       54774
+ 2016-07-07 |       360 |       54740
+ 2016-07-08 |       418 |       55084
+ 2016-07-09 |       410 |       55236
+ 2016-07-10 |       371 |       54489
+(10 rows)
+
+#Calculate the days did more than 1% of requests lead to errors
+#use cast() to convert the data type!
+SELECT date, (CAST(errortime AS float)/CAST(requesttime AS float)*100) as ErrorPercent
+FROM TotalLog
+WHERE (CAST(errortime AS float)/CAST(requesttime AS float)*100)>1;
+
+
+Reference in stack overflow:
+“Like” operator in inner join in SQL
+SQL joins, “there is an entry for table but it cannot be referenced”
+How to reuse a result column in an expression for another result column
+Division ( / ) not giving my answer in postgresql
+How to handle a long SQL statement string in Python
+Error: No module named psycopg2.extensions
+PostgreSQL date() with timezone
+Not equal and null in Postgres
+How to handle a long SQL statement string in Python
+Python, replace long dash with short dash?
+Print % sign with string formatting
+TypeError: cannot concatenate 'str' and 'type' objects
+How to print date in a regular format in Python?
