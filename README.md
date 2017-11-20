@@ -29,3 +29,44 @@ select * from articles limit 2;
 select * from authors limit 2;
 select * from log limit 2;
 ```
+3.Create View:<br />
+create view views (title, number of view)
+``` xml
+CREATE VIEW views
+AS SELECT articles.title, count(*) as view
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.title
+ORDER BY num desc;
+```
+create view bestAuthor (authorID, number of view)
+``` xml
+CREATE VIEW views
+AS SELECT articles.title, count(*) as view
+FROM articles join log
+on log.path LIKE CONCAT('/article/', articles.slug) 
+GROUP BY articles.title
+ORDER BY num desc;
+```
+#create view requestLog
+``` xml
+CREATE VIEW requestLog
+AS SELECT date(log.time) AS date, count(*) as requestTime
+FROM log
+Group by date;
+```
+create view errorLog
+``` xml
+CREATE VIEW errorLog
+AS SELECT date(log.time) AS date, count(*) as errorTime
+FROM log
+WHERE log.status != '200 OK'
+GROUP BY date;
+```
+create view TotalLog
+``` xml
+CREATE VIEW TotalLog
+AS SELECT errorLog.date, errortime, requesttime
+FROM requestLog, errorLog
+WHERE requestLog.date=errorLog.date;
+```
