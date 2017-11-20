@@ -2,7 +2,7 @@
 ## Synopsis
 Building a reporting tool depending on the logs in database. Use information from the database to discover bunch of question such as what kind of articles the site's readers like.
 
-### Installation
+## Installation
 1.Preparation<br />
 Install Python3<br />
 Install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1).<br />
