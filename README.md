@@ -48,14 +48,14 @@ on log.path LIKE CONCAT('/article/', articles.slug)
 GROUP BY articles.title
 ORDER BY num desc;
 ```
-#create view requestLog
+#create view requestLog(date, requesttime)
 ``` xml
 CREATE VIEW requestLog
 AS SELECT date(log.time) AS date, count(*) as requestTime
 FROM log
 Group by date;
 ```
-create view errorLog
+create view errorLog(date, errortime)
 ``` xml
 CREATE VIEW errorLog
 AS SELECT date(log.time) AS date, count(*) as errorTime
@@ -63,7 +63,7 @@ FROM log
 WHERE log.status != '200 OK'
 GROUP BY date;
 ```
-create view TotalLog
+create view TotalLog(date, errortime, requesttime)
 ``` xml
 CREATE VIEW TotalLog
 AS SELECT errorLog.date, errortime, requesttime
