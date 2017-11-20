@@ -29,7 +29,8 @@ if __name__ == '__main__':
     mostPopularArticle = get_logAnalysis(query1)
     # printArticle=print_result(mostPopularArticle);
     for article in mostPopularArticle:
-        print('"' + article[0] + '"'' -- ' + str(article[1]) + " views")
+        print('"' + article[0] +
+              '"'' -- ' + str(article[1]) + " views")
     print("#########################################################")
 
     # 2. Who are the most popular article authors of all time?
@@ -48,13 +49,17 @@ if __name__ == '__main__':
 
     # 3. On which days did more than 1% of requests lead to errors?
     print("Days more than 1% of requests lead to errors:")
-    query3 = """SELECT date, (CAST(errortime AS float)/CAST(requesttime AS float)*100) as ErrorPercent
+    query3 = """SELECT date,
+                (CAST(errortime AS float)/CAST(requesttime AS float)*100)
+                as ErrorPercent
             FROM TotalLog
-            WHERE (CAST(errortime AS float)/CAST(requesttime AS float)*100)>1;"""
+            WHERE (CAST(errortime AS float)/
+                    CAST(requesttime AS float)*100)>1;"""
     errorPercent = get_logAnalysis(query3)
     # printErrorInfo=print_result(errorPercent);
     for info in errorPercent:
-        print(info[0].strftime('%b %d,%Y') + ' -- ' + str(round(info[1], 2)) + " errors")
+        print(info[0].strftime('%b %d,%Y') +
+              ' -- ' + str(round(info[1], 2)) + " errors")
     print("#########################################################")
 
 
