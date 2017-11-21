@@ -61,5 +61,3 @@ if __name__ == '__main__':
         print(info[0].strftime('%b %d,%Y') +
               ' -- ' + str(round(info[1], 2)) + " errors")
     print("#########################################################")
-
-
