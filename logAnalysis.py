@@ -26,7 +26,7 @@ def get_logAnalysis(query):
 if __name__ == '__main__':
     # 1. What are the most popular three articles of all time?
     print("TOP Three Article:")
-    query1 = "select * from views"
+    query1 = "select * from views Limit 3"
     mostPopularArticle = get_logAnalysis(query1)
     # printArticle=print_result(mostPopularArticle);
     for article in mostPopularArticle:
