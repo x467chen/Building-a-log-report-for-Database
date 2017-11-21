@@ -38,7 +38,7 @@ AS SELECT articles.title, count(*) as view
 FROM articles join log
 on log.path LIKE CONCAT('/article/', articles.slug) 
 GROUP BY articles.title
-ORDER BY num desc;
+ORDER BY view desc;
 ```
 create view bestAuthor (authorID, number of view)
 ``` xml
