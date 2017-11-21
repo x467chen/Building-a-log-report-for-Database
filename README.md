@@ -42,11 +42,11 @@ ORDER BY num desc;
 ```
 create view bestAuthor (authorID, number of view)
 ``` xml
-CREATE VIEW views
-AS SELECT articles.title, count(*) as view
+CREATE VIEW bestAuthor
+AS SELECT articles.author, count(*) as num
 FROM articles join log
 on log.path LIKE CONCAT('/article/', articles.slug) 
-GROUP BY articles.title
+GROUP BY articles.id
 ORDER BY num desc;
 ```
 #create view requestLog(date, requesttime)
