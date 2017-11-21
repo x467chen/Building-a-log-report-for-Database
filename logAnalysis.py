@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # A Log Analysis for a newspaper site database.
 # Create all the views in your DB before running the programs
 import psycopg2
